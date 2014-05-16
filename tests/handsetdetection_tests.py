@@ -626,5 +626,4 @@ class HandsetDetectionExceptionTests(unittest.TestCase):
 
 if "__main__" == __name__:
     unittest.main()
-
 # vim:set bomb et sw=4 ts=4 tw=79:
