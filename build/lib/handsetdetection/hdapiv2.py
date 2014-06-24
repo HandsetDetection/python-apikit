@@ -70,7 +70,7 @@ class HandsetDetection(object):
 
     # Public methods
 
-    def set_credentials(self, username, secret):        
+    def set_credentials(self, username, secret):
         """Set the username and generate the user token.
         
         username - your registered e-mail address
