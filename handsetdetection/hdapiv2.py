@@ -112,7 +112,7 @@ class HandsetDetection(object):
 
         if isinstance(options, list):
             options = ",".join(options)
-        data["options"] = options
+        data["options"] = options        
         result = self._do_request("detect", data)
         deviceinformation = HandsetDetectionDeviceInformation(result)
         deviceinformation.pop("status")

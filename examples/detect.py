@@ -46,6 +46,8 @@ def get_client_and_server_data():
     data["REQUEST_URI"] = os.environ.get("REQUEST_URI", "")
     data["SERVER_ADDR"] = os.environ.get("SERVER_ADDR", "")
     data["SERVER_NAME"] = os.environ.get("SERVER_NAME", "")
+    data["user-agent"] = "Mozilla/5.0 (Linux; U; Android 2.1-update1; cs-cz; SonyEricssonX10i Build/2.1.B.0.1) AppleWebKit/530.17 (KHTML, like Gecko) Version/4.0 Mobile Safari/530.17"
+    data["x-wap-profile"] = "http://wap.sonyericsson.com/UAprof/X10iR201.xml"
     return data
 
 def welcome(data):
@@ -80,10 +82,10 @@ def main():
     "Redirect mobile users to MOBILE_URL"
     # First, get the information to pass to Handset Detection.
     hd = handsetdetection
-    hd.set_credentials("203a2c5495", "4Mcy7r7wDFdCDbg2")    
+    hd.set_credentials("jessie@handsetdetection.com", "4Mcy7r7wDFdCDbg2")    
     data = get_client_and_server_data()
     try:
-        result = hd.detect(data, "xhtml_ui")
+        result = hd.detect(data, "hd_specs")
         welcome(result)
     except handsetdetection.DeviceNotFoundError, err:
         # Mobile device not detected.

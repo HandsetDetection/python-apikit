@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!C:/Python26/python.exe
 "A CGI script demonstrating redirection of mobile devices."
 # Copyright (c) 2009 Teleport Corp Pty Ltd.
 #
@@ -86,7 +86,7 @@ def main():
     "Redirect mobile users to MOBILE_URL"
     # First, get the information to pass to Handset Detection.
     hd = handsetdetection
-    hd.set_credentials("demo@handsetdetection.com", "demo")
+    hd.set_credentials("jessie@handsetdetection.com", "4Mcy7r7wDFdCDbg2")
     data = get_client_and_server_data()
     try:
         result = hd.detect(data, "product_info")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!C:/Python26/python.exe
 "A CGI script listing mobile device vendors."
 # Copyright (c) 2009 Teleport Corp Pty Ltd.
 #
@@ -100,7 +100,7 @@ def main():
     vendor = get_vendor()
 
     hd = handsetdetection
-    hd.set_credentials("demo@handsetdetection.com", "demo")
+    hd.set_credentials("jessie@handsetdetection.com", "4Mcy7r7wDFdCDbg2")
     try:
         result = hd.model(vendor)
         list_models(vendor, result)
