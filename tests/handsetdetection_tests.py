@@ -200,7 +200,7 @@ class HandsetDetectionRequestsTests(unittest.TestCase):
 
         self.hd = handsetdetection.HandsetDetection("foo", "bar")
         self.hd._do_request = types.MethodType(fake_do_request, self.hd)
-
+	
     def test_vendor(self):
         "Test the vendor() API call."
         self.hd.testresult = self.vendor_result.copy()
