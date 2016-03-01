@@ -1,0 +1,31 @@
+#
+# Handset Detection API v4 default config file.
+# Please configure this with your access credentials
+# You'll need you api_username, api_secret and your site_id
+#
+config:
+  api_username: Your API Username
+  api_secret: Your API Secret
+  site_id: '0'
+  use_local: False
+  filesdir: /tmp
+  debug: false
+  api_server: api.handsetdetection.com
+  cache_requests: False
+  timeout: 10
+  use_proxy: false
+  proxy_server:
+  proxy_port:
+  proxy_user:
+  proxy_pass:
+  retries: 3
+
+#
+# Dogpile.cache settings.
+# The cache defaults to backend: dogpile.cache.memory, expiry: 3600, arguments: { cache_dict: hd40cache }
+#
+cache:
+  backend: dogpile.cache.memory
+  expiry: 3600
+  arguments:
+    cache_dict: hd40cache

@@ -1,10 +1,10 @@
 Metadata-Version: 1.1
 Name: handsetdetection
-Version: 1.1
+Version: 4.0
 Summary: Handset Detection Python API kit
-Home-page: http://code.google.com/p/handset-detection-python-api-kit/
-Author: Troy Farrell
-Author-email: troy@entheossoft.com
+Home-page: https://github.com/HandsetDetection/python-apikit
+Author: Richard Uren
+Author-email: richard@teleport.com.au
 License: MIT License
 Description: UNKNOWN
 Platform: UNKNOWN

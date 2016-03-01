@@ -102,19 +102,22 @@ from handsetdetection.exceptions import (
         DeviceNotFoundError,
        )
 
-from handsetdetection.hdapiv2 import HandsetDetection
+import HD4
 
 # Used in convenience functions
 _APIOBJECT = None
 if _APIOBJECT is None:
-    _APIOBJECT      = HandsetDetection()
+    _APIOBJECT      = HD4.HandsetDetection
     # It doesn't make sense to expose set_class_v2_apikey as a convenience
     # function since these functions explicitly avoid addressing the class.
-    set_credentials = _APIOBJECT.set_credentials
-    set_v2_apikey   = _APIOBJECT.set_v2_apikey
+    setConfig           = _APIOBJECT.setConfig
+    readConfig          = _APIOBJECT.readConfig
     # Actual API functions...
-    detect          = _APIOBJECT.detect
-    model           = _APIOBJECT.model
-    track           = _APIOBJECT.track
-    vendor          = _APIOBJECT.vendor
+    deviceDetect        = _APIOBJECT.deviceDetect
+    deviceModels        = _APIOBJECT.deviceModels
+    deviceVendors       = _APIOBJECT.deviceVendors
+    deviceWhatHas       = _APIOBJECT.deviceWhatHas
+    deviceFetchArchive  = _APIOBJECT.deviceFetchArchive
+    communityFetchArchive       = _APIOBJECT.communityFetchArchive
+    
 # vim:set bomb et sw=4 ts=4 tw=79:
