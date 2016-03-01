@@ -1,0 +1,26 @@
+config:
+  api_username: ***Your API Username***
+  api_secret: ***Your API Secret***
+  site_id: ***Your Site ID*** (Note: in quotes eg '23' or '56745')
+  use_local: False
+  filesdir: /tmp
+  debug: false
+  api_server: api.handsetdetection.com
+  cache_requests: False
+  timeout: 10
+  use_proxy: false
+  proxy_server:
+  proxy_port:
+  proxy_user:
+  proxy_pass:
+  retries: 3
+
+#
+# Dogpile.cache settings.
+# The cache defaults to backend: dogpile.cache.memory, expiry: 3600, arguments: { cache_dict: hd40cache }
+#
+cache:
+  backend: dogpile.cache.memory
+  expiry: 3600
+  arguments:
+    cache_dict: hd40cache
