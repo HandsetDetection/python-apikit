@@ -1,11 +1,11 @@
 ﻿"""Handset Detection API implementation
 
 The HandsetDetection class provides easy access to the Handset Detections HTTP
-API version 2.
+API version 4.
 
 HandsetDetectionRequest encapsulates calls to urllib2 to make the request.
 """
-# Copyright (c) 2009 Teleport Corp Pty Ltd.
+# Copyright (c) 2009 -2016 Teleport Corp Pty Ltd.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -24,80 +24,139 @@ HandsetDetectionRequest encapsulates calls to urllib2 to make the request.
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+#
 
-# Author: Troy Farrell <troy@entheossoft.com>
-# Created: 20090806
-
-# The JSON library simplejson became part of the Python Standard Library with
-# Python 2.6.  If it's available, we'll use it.  Otherwise, we'll use XML.
-try:
-    import json
-    JSON_FOUND = True
-except ImportError:
-    try:
-        import simplejson as json
-        JSON_FOUND = True
-    except ImportError:
-        JSON_FOUND = False
-
+import json
 import urllib2
-# If a JSON library is found, xml.sax is not used.  The test suite tests the
-# XML code, so importing it is a good idea anyway.  Commment it out if you are
-# using JSON and concerned about performance.
-import xml.sax.handler
-import xml.sax.saxutils
+import urlparse
+import io
+import socket
+import ConfigParser
+import os.path
+import string
+import zipfile
+import yaml
+import time
+import md5
 
-from handsetdetection.wsseut import WSSEUserTokenHeaderGenerator
-import handsetdetection.exceptions as exceptions
+import exceptions as exceptions
+from HDStore import *
+from HDDevice import *
 
 class HandsetDetection(object):
-    "An object for accessing the Handset Detection API v2.0"
+    "An object for accessing the Handset Detection API v4.0"
 
-    _baseUrl = "http://api.handsetdetection.com"
-    # This API key is the key for this Python module. You should create a new
-    # key if you substially modify this code.  You can set a new key with
-    # set_v2_api_key.
-    _apikey = "f923560d264b752bcd84c2cd0b0695e7"
-
+    configFile = 'hd_config.yml'
+    config = {
+        'api_username': '',
+        'api_secret': '',
+        'api_server': 'api.handsetdetection.com',
+        'site_id': '0',
+        'use_local': False,
+        'filesdir': '/tmp',
+        'debug': False,
+        'cache_requests': False,
+        'timeout': 5,
+        'use_proxy': False,
+        'proxy_server': '',
+        'proxy_port' : '',
+        'proxy_user' : '',
+        'proxy_pass': '',
+        'retries': 3
+    }
+    _api_realm = 'APIv4'
+    _urlPathFragment = "/apiv4"
+    _Store = None
+    _raw_reply = ''
+    
     # Initialization
+    def __init__(self, configFile = None):
+        self._Store = HDStore()
+        self._Device = HDDevice()
+        if configFile is not None:
+            self.readConfig(configFile)
+        elif os.path.isfile(self.configFile):
+            self.readConfig(self.configFile)
 
-    def __init__(self, username=None, secret=None):
-        "Initialize the api object."
-        self._usertoken = None
-        self._usejson = JSON_FOUND
+    # Public Methods
+    def getReply(self):
+        return self.reply
+    
+    def getRawReply(self):
+        return self._raw_reply
+    
+    def readConfig(self, configFileName):
+        """Configure the api kit with details from a config file.
 
-        self.set_credentials(username, secret)
+        configFileName string - The name of config file
+        """
+        yamlFile = open(configFileName)
+        config = yaml.safe_load(yamlFile)
+        yamlFile.close()
+        self.setConfig(config)
 
-    # Public methods
-
-    def set_credentials(self, username, secret):        
+    def setConfig(self, config):
         """Set the username and generate the user token.
+
+        api_username string - your registered e-mail address
+        api_secret string - the auto-generated API version 2 secret
+        """
+        for key in config['config']:
+            self.config[key] = config['config'][key]
+
+        self._Store.setConfig(config)
+        self._Device.setConfig(config)
         
-        username - your registered e-mail address
-        secret - the auto-generated API version 2 secret
-        """
-        if None not in [secret, username]:
-            self._usertoken = WSSEUserTokenHeaderGenerator(username,
-                                                           secret)
+    def deviceVendors(self):
+        "Returns a list of vendors."
+
+        if self.config['use_local'] is True or self.config['use_local'] is 1:
+            self.reply = self._Device.localVendors()
+            self._raw_reply = json.dumps(self.reply)
         else:
-            self._usertoken = None
+            uriParts = [ self._urlPathFragment, "device", "vendors", self.config['site_id'] ]
+            uri = string.join(uriParts, "/") + ".json"
+            self._do_request(uri, {}, {}, "json")
+        return self.reply
 
-    def set_v2_apikey(self, apikey):
-        """Set the API key used by the object.
-
-        This does not modify the API key of newly constructed objects.  To do
-        that, change the value on the class:
-
-        HandsetDetection.set_class_v2_apikey(my_apikey)
+    def deviceModels(self, vendorName):
+        """Returns a list of models for the given vendor.
+        
+        vendorName string - The name of a vendor eg. Nokia
         """
-        self._apikey = apikey
 
-    @classmethod
-    def set_class_v2_apikey(cls, apikey):
-        "Set the API key used on all new HandsetDetection instances."
-        cls._apikey = apikey
+        if self.config['use_local'] is True or self.config['use_local'] is 1:
+            self.reply = self._Device.localModels(vendorName)
+            self._raw_reply = json.dumps(self.reply)
+        else:
+            uriParts = [ self._urlPathFragment, "device", "models", vendorName, self.config['site_id'] ]
+            uri = string.join(uriParts, "/") + ".json"  
+            self._do_request(uri, {}, {}, "json")
+        return self.reply
 
-    def detect(self, data, options):
+    def deviceWhatHas(self, key, value):
+
+        if self.config['use_local'] is True or self.config['use_local'] is 1:
+            self.reply = self._Device.localWhatHas(key, value)
+            self._raw_reply = json.dumps(self.reply)
+        else:
+            uriParts = [ self._urlPathFragment, "device", "whathas", key, value, self.config['site_id'] ]
+            uri = string.join(uriParts, "/") + ".json"  
+            self._do_request(uri, {}, {}, "json")
+        return self.reply
+        
+    def deviceView(self, vendor, model):
+
+        if self.config['use_local'] is True or self.config['use_local'] is 1:
+            self.reply = self._Device.localView(vendor, model)
+            self._raw_reply = json.dumps(self.reply)
+        else:
+            uriParts = [ self._urlPathFragment, "device", "view", vendor, model, self.config['site_id'] ]
+            uri = string.join(uriParts, "/") + ".json"
+            self._do_request(uri, {}, {}, "json")
+        return self.reply
+        
+    def deviceDetect(self, data, options = None):
         """Detect a handset with the User-Agent and/or other information.
 
         data - a dictionary containing a User-Agent, IP address, x-wap-profile,
@@ -107,295 +166,133 @@ class HandsetDetection(object):
                   e.g., "geoip,product_info,display" or ["geoip",
                   "product_info"], etc.
         """
-        self._check_usertoken()
         assert isinstance(data, dict)
 
-        if isinstance(options, list):
-            options = ",".join(options)
-        data["options"] = options        
-        result = self._do_request("detect", data)
-        deviceinformation = HandsetDetectionDeviceInformation(result)
-        deviceinformation.pop("status")
-        deviceinformation.pop("message")
-        return deviceinformation
-
-    def model(self, vendorname):
-        "Returns a list of models for the given vendor."
-        self._check_usertoken()
-
-        data = {"vendor": vendorname}
-        # Yes, that's supposed to be "models"
-        result = self._do_request("models", data)
-        return "model" in result and result["model"] or []
-
-    def track(self, data):
-        """Track a user's requests.
-        data - a dictionary containing a User-Agent, IP address, x-wap-profile,
-               and any other information that may be useful in identifying the
-               handset
-        """
-        self._check_usertoken()
-
-        self._do_request("track", data)
-        # There's nothing to return when this works.
-        return None
-
-    def vendor(self):
-        "Returns a list of vendors."
-        self._check_usertoken()
-
-        data = {}
-        # Yes, that's supposed to be "vendors"
-        result = self._do_request("vendors", data)
-        return "vendor" in result and result["vendor"] or []
-
-    # Private methods
-
-    def _build_headers(self):
-        "Send the request to Handset Detection."
-        # Headers
-        # Authorization headers
-        headers = self._usertoken.next()
-        # ApiKey header
-        headers["ApiKey"] = self._apikey
-        # Content-type header
-        contenttype = self._usejson and "application/json" or "text/xml"
-        headers["Content-type"] = contenttype
-        return headers
-
-    def _build_url(self, method):
-        "Build the url for a request."
-        # Yes, models and vendors are supposed to be plural...
-        assert method in ["detect", "models", "track", "vendors"]
-
-        import urlparse
-
-        parts = {}
-        parts["method"] = method
-        parts["suffix"] = self._usejson and "json" or "xml"
-        urlpath = "/devices/%(method)s.%(suffix)s" % parts
-        url = urlparse.urljoin(self._baseUrl, urlpath)
-        return url
-
-    @staticmethod
-    def _check_status(data):
-        "Raise the appropriate error if status != '0'."
-        status = int(data["status"])
-        if 0 != status:
-            exception = {
-                    100: exceptions.UnknownRequestTypeError,
-                    200: exceptions.CredentialsFailedError,
-                    201: exceptions.UnmatchedDigestError,
-                    202: exceptions.ApiKeyError,
-                    203: exceptions.MaxQueriesError,
-                    204: exceptions.MalformedXmlError,
-                    205: exceptions.MalformedJsonError,
-                    206: exceptions.NoDataError,
-                    207: exceptions.VendorMissingError,
-                    # This doesn't support version 1.0.
-                    #208: exceptions.ApiKeyNotFoundError,
-                    209: exceptions.ApiKeyNotSetError,
-                    300: exceptions.UserAgentOrProfileMissingWarning,
-                    301: exceptions.DeviceNotFoundError,
-                }.get(status, ValueError)
-            raise exception(status, data["message"], data)
+        if self.config['use_local'] is True or self.config['use_local'] is 1:
+            self.reply = self._Device.localDetect(data)
+            self._raw_reply = json.dumps(self.reply)
         else:
+            # Set Content-type header
+            headers = {}
+            headers["Content-type"] = "application/json"
+            uriParts = [ self._urlPathFragment, "device", "detect", self.config['site_id'] ]
+            uri = string.join(uriParts, "/") + ".json"
+    
+            if isinstance(options, list):
+                options = ",".join(options)
+            data["options"] = options
+            self._do_request(uri, headers, data, "json")
+            
+        return self.reply
+
+    def deviceFetchArchive(self):
+        """Fetch an archive of all the device specs and install it
+        """
+        
+        uriParts = [ self._urlPathFragment, "device", "fetcharchive", self.config['site_id'] ]
+        uri = string.join(uriParts, "/")
+        result = self._do_request(uri, {}, {}, "zip")
+        if result == None:
             return None
 
-    def _check_usertoken(self):
-        "Raise a ValueError if the module is not initialized before use."
-        if not isinstance(self._usertoken, WSSEUserTokenHeaderGenerator):
-            raise ValueError("Call set_credentials() before calling API "
-                             "functions.")
+        # Save Archive
+        zipFileName = os.path.join(self.config['filesdir'], "ultimate-full.zip")
+        with open(zipFileName, 'wb') as zipFile:
+            zipFile.write(self._raw_reply)
+        zipFile.close()
+        
+        # Install archive
+        self.installArchive(zipFileName)
+    
+    def communityFetchArchive(self):
+        """Fetch the community device archive.
+        """
+        uriParts = [ self._urlPathFragment, "community", "fetcharchive", self.config['site_id'] ]
+        uri = string.join(uriParts, "/")
+        result = self._do_request(uri, {}, {}, "zip")
+        if result == None:
+            return None
+        
+        # Save Archive
+        zipFileName = os.path.join(self.config['filesdir'], "ultimate-community.zip")
+        with open(zipFileName, 'wb') as zipFile:
+            zipFile.write(self._raw_reply)
+        zipFile.close()
+        
+        # Install Archive
+        self.installArchive(zipFileName)
+        
+    def installArchive(self, fileName):
+        "Install an archive"
+        
+        zf = zipfile.ZipFile(fileName, 'r')        
+        for archiveFile in zf.namelist():
+            zf.extract(archiveFile, self.config['filesdir'])
+            srcFileName = os.path.join(self.config['filesdir'], archiveFile)
+            self._Store.moveIn(srcFileName, archiveFile)
+              
+    # Private methods
 
-    def _do_request(self, method, data):
+    def _do_request(self, uri, headers, data, replyType):
         "Send the request to Handset Detection."
-        headers = self._build_headers()
-        url = self._build_url(method)
-        postdata = self._serialize_data(data)
 
-        request = HandsetDetectionRequest(url, postdata, headers)
-        response = request.send()
+        self._raw_reply = ''
+        self.reply = {}
+        
+        postdata = json.dumps(data)
+        url = "http://" + self.config['api_server'] + uri
+        
+        # Note : Precompute the auth digest to avoid the challenge turnaround request
+        # Speeds up network turnaround requests by 50%
+        realm = self._api_realm
+        username = self.config['api_username']
+        secret = self.config['api_secret']
+        nc = "00000001"
+        snonce = self._api_realm
+        cnonce = md5.new(str(int(time.time())) + secret).hexdigest()
+        qop = 'auth'
+        # AuthDigest Components
+        # http://en.wikipedia.org/wiki/Digest_access_authentication
+        ha1 = md5.new(username + ':' + realm + ':' + secret).hexdigest()
+        ha2 = md5.new('POST:' + uri).hexdigest()
+        response = md5.new(ha1 + ':' + snonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).hexdigest()
+
+        socket.setdefaulttimeout(self.config['timeout'])
+        # Conventional HTTP Digest handling
+        #auth = urllib2.HTTPDigestAuthHandler()
+        #auth.add_password(self._api_realm, url, self.config['api_username'], self.config['api_secret'])
+        #opener = urllib2.build_opener(auth, urllib2.HTTPHandler(debuglevel=1))
+        #urllib2.install_opener(opener)
+        request = urllib2.Request(url, postdata, headers)
+        request.add_header('Authorization',
+                            'Digest ' +
+                            'username="' + username + '", ' +
+                            'realm="' + realm + '", ' +
+                            'nonce="' + snonce + '", ' +
+                            'uri="' + uri + '", ' +
+                            'qop=' + qop + ', ' +
+                            'nc=' + nc + ', ' +
+                            'cnonce="' + cnonce + '", ' +
+                            'response="' + response + '", ' +
+                            'opaque="' + realm + '"'
+                           )
+        response = urllib2.urlopen(request)
+        rawReply = response.read()
+        
         if response.code == 200:
-            data = self._parse_data(method, response)
-            self._check_status(data)
-            return data
-        else:
-            assert False, ("response.code != 200 - urllib2 should have thrown "
-                           "an exception.")
-
-    def _parse_data(self, method, response):
-        "Convert the server's response into something meaningful."
-        if self._usejson:
-            result = self._parse_json(response)
-        else:
-            result = self._parse_xml(method, response)
-        return result
-
-    @staticmethod
-    def _parse_json(response):
-        "Convert JSON into meaningful data."
-        result = json.load(response)
-        return result
-
-    def _parse_xml(self, method, response):
-        "Convert XML into meaningful data."
-
-        class _ModelVendorHandler(xml.sax.handler.ContentHandler):
-            "A content handler for HD API's XML."
-            ignoretags = ["reply"]
-            sequencetags = ["model", "vendor"]
-
-            def __init__(self):
-                "Initialize the ModelVendorHandler."
-                xml.sax.handler.ContentHandler.__init__(self)
-                self.newelement = False
-                self.currentelement = None
-                self.result = {}
-
-            def startElement(self, name, attrs):
-                "Entering an element"
-                self.currentelement = name
-                if (name not in self.ignoretags and
-                    name in self.sequencetags):
-                    self.newelement = True
-                    if name not in self.result:
-                        self.result[name] = []
-
-            def characters(self, data):
-                "Encountered character data"
-                # Ignore cases where data == "\n"
-                if self.currentelement not in self.ignoretags and data.strip():
-                    if self.currentelement in self.sequencetags:
-                        if self.newelement:
-                            self.result[self.currentelement].append(data)
-                        else:
-                            sequence = self.result[self.currentelement]
-                            if len(sequence) > 0:
-                                oldstring = sequence[-1]
-                                sequence[-1] = u"".join([oldstring, data])
-                            else:
-                                self.result[self.currentelement].append(data)
-                        self.newelement = False   
-                    else:
-                        self.result[self.currentelement] = data
-
-        class _DetectTrackHandler(xml.sax.handler.ContentHandler):
-            "A content handler for HD API's XML."
-            ignoretags = ["reply"]
-            grouptags = ["product_info",
-                         "wml_ui",
-                         "chtml_ui",
-                         "xhtml_ui",
-                         "ajax",
-                         "markup",
-                         "cache",
-                         "display",
-                         "image_format",
-                         "bugs",
-                         "wta",
-                         "security",
-                         "bearer",
-                         "storage",
-                         "object_download",
-                         "drm",
-                         "streaming",
-                         "wap_push",
-                         "mms",
-                         "sms",
-                         "j2me",
-                         "sound_format",
-                         "flash_lite",
-                         "geoip"
-                        ]
-
-            def __init__(self):
-                "Initialize the DetectTrackHandler."
-                xml.sax.handler.ContentHandler.__init__(self)
-                self.currentelement = None
-                self.elementlist = []
-                self.result = {}
-
-            def startElement(self, name, attrs):
-                "Entering an element"
-                self.elementlist.append(name)
-                if (name not in self.ignoretags and
-                    name not in self.result and
-                    name in self.grouptags):
-                    self.result[name] = {}
-
-            def endElement(self, name):
-                "Leaving an element"
-                self.elementlist.pop()
-
-            def characters(self, data):
-                "Encountered character data"
-                name = self.elementlist and self.elementlist[-1] or None
-                parent = (len(self.elementlist) > 1 and self.elementlist[-2]
-                                                    or None)
-                # Ignore cases where data == "\n"
-                if name not in self.ignoretags and data.strip():
-                    if parent in self.grouptags:
-                        groupdictionary = self.result[parent]
-                        groupdictionary[name] = data
-                    else:
-                        self.result[name] = data
-
-        # Now, parse the data
-        parser = xml.sax.make_parser()
-        if method in ["models", "vendors"]:
-            contenthandler = _ModelVendorHandler()
-        elif method in ["detect", "track"]:
-            contenthandler = _DetectTrackHandler()
-        else:
-            raise ValueError("No handler for a %r method." % method)
-        parser.setContentHandler(contenthandler)
-        parser.parse(response)
-        return contenthandler.result
-
-    def _serialize_data(self, data):
-        "Convert the data structure into something that can be posted."
-        if self._usejson:
-            result = self._serialize_json(data)
-        else:
-            result = self._serialize_xml(data)
-        return result
-
-    @staticmethod
-    def _serialize_json(data):
-        "Convert data into meaningful JSON."
-        return json.dumps(data)
-
-    @staticmethod
-    def _serialize_xml(data):
-        "Convert data into meaningful XML."
-        # There is no document sent for empty data
-        if not data:
-            return ""
-
-        import StringIO
-
-        resultio = StringIO.StringIO()
-        xmlgenerator = xml.sax.saxutils.XMLGenerator(resultio, "UTF-8")
-        xmlgenerator.startDocument()
-        # Start request element
-        xmlgenerator.startElement(u"request", {})
-        # Fill in all the data
-        for key, value in data.items():
-            xmlgenerator.startElement(key, {})
-            valuetext = xml.sax.saxutils.escape(value)
-            xmlgenerator.characters(valuetext)
-            xmlgenerator.endElement(key)
-        # End request element
-        xmlgenerator.endElement(u"request")
-        xmlgenerator.endDocument()
-        return resultio.getvalue()
+            #print rawReply
+            self._raw_reply = rawReply
+            if replyType == "json":
+                self.reply = json.loads(rawReply)
+            return True
+        assert False, ("response.code != 200 - urllib2 should have thrown an exception.")
 
 class HandsetDetectionRequest(object):
     "An HTTP request for Handset Detection"
 
-    def __init__(self, url, data, headers):
-        self._url = url
+    def __init__(self, server, uri, data, headers):
+        self._api_server = server
+        self._uri = uri
         self._data = data
         self._headers = headers
         self._request = urllib2.Request(url, data, headers)
@@ -406,28 +303,4 @@ class HandsetDetectionRequest(object):
             response = urllib2.urlopen(self._request)
             return response
         except urllib2.HTTPError, err:
-            raise exceptions.HttpError(err.filename,
-                                       err.code,
-                                       err.msg,
-                                       err.hdrs)
-
-class HandsetDetectionDeviceInformation(dict):
-    "Detected device information"
-
-    def get_click_to_call(self):
-        "Get the click-to-call string."
-        if ("xhtml_ui" in self and
-            "xhtml_make_phone_call_string" in self["xhtml_ui"]):
-            callstring = self["xhtml_ui"]["xhtml_make_phone_call_string"]
-            return u"none" != callstring and callstring or None
-        return None
-
-    def get_send_sms(self):
-        "Get the send-SMS string."
-        if ("xhtml_ui" in self and
-            "xhtml_send_sms_string" in self["xhtml_ui"]):
-            smsstring = self["xhtml_ui"]["xhtml_send_sms_string"]
-            return u"none" != smsstring and smsstring or None
-        return None
-
-# vim:set bomb et sw=4 ts=4 tw=79:
+            raise exceptions.HttpError(err.filename, err.code, err.msg, err.hdrs)

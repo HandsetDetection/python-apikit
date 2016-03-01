@@ -1,7 +1,12 @@
+#
+# Handset Detection API v4 default config file.
+# Please configure this with your access credentials
+# You'll need you api_username, api_secret and your site_id
+#
 config:
-  api_username: ***Your API Username***
-  api_secret: ***Your API Secret***
-  site_id: ***Your Site ID*** (Note: in quotes eg '23' or '56745')
+  api_username: Your API Username
+  api_secret: Your API Secret
+  site_id: '0'
   use_local: False
   filesdir: /tmp
   debug: false

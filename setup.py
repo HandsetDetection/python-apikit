@@ -1,5 +1,5 @@
-﻿"A script to install Handset Detection's APIv2 Python module."
-# Copyright (c) 2009, 2013 Teleport Corp Pty Ltd.
+﻿"A script to install Handset Detection's APIv4 Python module."
+# Copyright (c) 2009 - 2016 Teleport Corp Pty Ltd.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -37,11 +37,11 @@ if version < '2.2.3':
     DistributionMetadata.download_url = None
 
 setup(name="handsetdetection",
-      version="1.1",
+      version="4.0",
       description="Handset Detection Python API kit",
-      author="Troy Farrell",
-      author_email="troy@entheossoft.com",
-      url="http://code.google.com/p/handset-detection-python-api-kit/",
+      author="Richard Uren",
+      author_email="richard@teleport.com.au",
+      url="https://github.com/HandsetDetection/python-apikit",
       packages=["handsetdetection"],
       classifiers=[
           'Development Status :: 5 - Production/Stable',
