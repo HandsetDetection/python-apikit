@@ -41,9 +41,9 @@ class TestLoader:
 
 class HD4Tests(unittest.TestCase):
 
-	cloudConfig = '../hd4CloudConfig.yml'
-	ultimateConfig = '../hd4UltimateConfig.yml'
-	communityConfig = '../hd4CommunityConfig.yml'
+	cloudConfig = 'hd4CloudConfig.yml'
+	ultimateConfig = 'hd4UltimateConfig.yml'
+	communityConfig = 'hd4CommunityConfig.yml'
 
 	devices = {
 		'NokiaN95': {
@@ -104,8 +104,11 @@ class HD4Tests(unittest.TestCase):
 
 	@classmethod
 	def setUpClass(cls):
-		pass
-
+		root = os.path.dirname(os.path.dirname(__file__))
+		cls.cloudConfig = os.path.join(root, cls.cloudConfig)
+		cls.ultimateConfig = os.path.join(root, cls.ultimateConfig)
+		cls.communityConfig = os.path.join(root, cls.communityConfig)
+		
 	@classmethod
 	def tearDownClass(cls):
 		pass
@@ -434,14 +437,13 @@ class HD4Tests(unittest.TestCase):
 		self.assertEquals(reply['hd_specs']['general_platform'], 'Windows Phone')
 
 	# Ultimate Detection Tests
-	"""
 	def test_deviceFetchArchive(self):
 		hd = HandsetDetection(self.ultimateConfig)
 		hd.deviceFetchArchive()
 
 		self.assertTrue(os.path.isfile('/tmp/ultimate-full.zip'))
 		self.assertTrue(os.path.isfile('/tmp/hd40store/user-agent0.json'))
-	"""
+
 	def test_ultimateDeviceVendors(self):
 		hd = HandsetDetection(self.ultimateConfig)
 		result = hd.deviceVendors()
