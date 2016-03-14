@@ -21,9 +21,9 @@
 # THE SOFTWARE.
 #
 
-from HDBase import *
-from HDStore import *
-from HDExtra import *
+from handsetdetection.HDBase import *
+from handsetdetection.HDStore import *
+from handsetdetection.HDExtra import *
 import os
 import json
 

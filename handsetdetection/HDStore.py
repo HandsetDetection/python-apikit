@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 
-from HDCache import *
+from handsetdetection.HDCache import *
 import os
 import json
 import sys
