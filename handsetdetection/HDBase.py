@@ -332,4 +332,3 @@ class HDBase(object):
 			self._tree[branchKey] = branch
 			return branch
 		return {}
-	
