@@ -221,10 +221,10 @@ class HD4Tests(unittest.TestCase):
 		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
 		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
 		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertTrue(reply['hd_specs'].has_key('display_pixel_ratio'))
-		self.assertTrue(reply['hd_specs'].has_key('display_ppi'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_min'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_max'))
+		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
+		self.assertTrue('display_ppi' in reply['hd_specs'])
+		self.assertTrue('benchmark_min' in reply['hd_specs'])
+		self.assertTrue('benchmark_max' in reply['hd_specs'])
 
 	def test_cloudDetectHTTPiPhoneWierdHeaders(self):
 		""" Detection test Apple iPhone user-agent in weird headers """
@@ -246,11 +246,10 @@ class HD4Tests(unittest.TestCase):
 		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
 		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
 		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertTrue(reply['hd_specs'].has_key('display_pixel_ratio'))
-		self.assertTrue(reply['hd_specs'].has_key('display_ppi'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_min'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_max'))
-
+		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
+		self.assertTrue('display_ppi' in reply['hd_specs'])
+		self.assertTrue('benchmark_min' in reply['hd_specs'])
+		self.assertTrue('benchmark_max' in reply['hd_specs'])
 
 	def test_cloudDetectHTTPiPhone3gs(self):
 		""" Detection test iPhone 3GS (same UA as iPhone 3G, different x-local-hardwareinfo header) """
@@ -552,10 +551,10 @@ class HD4Tests(unittest.TestCase):
 		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
 		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
 		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertTrue(reply['hd_specs'].has_key('display_pixel_ratio'))
-		self.assertTrue(reply['hd_specs'].has_key('display_ppi'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_min'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_max'))
+		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
+		self.assertTrue('display_ppi' in reply['hd_specs'])
+		self.assertTrue('benchmark_min' in reply['hd_specs'])
+		self.assertTrue('benchmark_max' in reply['hd_specs'])
 
 	def test_ultimateDetectHTTPiPhoneWierdHeaders(self):
 		""" Detection test Apple iPhone user-agent in weird headers """
@@ -577,10 +576,10 @@ class HD4Tests(unittest.TestCase):
 		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
 		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
 		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertTrue(reply['hd_specs'].has_key('display_pixel_ratio'))
-		self.assertTrue(reply['hd_specs'].has_key('display_ppi'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_min'))
-		self.assertTrue(reply['hd_specs'].has_key('benchmark_max'))
+		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
+		self.assertTrue('display_ppi' in reply['hd_specs'])
+		self.assertTrue('benchmark_min' in reply['hd_specs'])
+		self.assertTrue('benchmark_max' in reply['hd_specs'])
 
 
 	def test_ultimateDetectHTTPiPhone3gs(self):

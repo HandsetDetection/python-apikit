@@ -54,7 +54,7 @@ class HDExtra(HDBase):
 				order.append(k)
 
 		for item in order:
-			if headers.has_key(item):
+			if item in headers:
 				self.log("Trying user-agent match on header " + item)
 				_id = self.getMatch('user-agent', headers[item], category, item, category)
 				if _id is not None:
@@ -78,9 +78,9 @@ class HDExtra(HDBase):
 		extra['Extra']['hd_specs']['general_language_full'] = ''
 
 		# Try directly from http header first
-		if headers.has_key('language'):
+		if 'language' in headers:
 			candidate = headers['language']
-			if self._detectionLanguages.has_key(candidate):
+			if candidate in self._detectionLanguages:
 				extra['Extra']['hd_specs']['general_language'] =  candidate
 				extra['Extra']['hd_specs']['general_language_full'] = self._detectionLanguages[candidate]
 				return extra
@@ -93,7 +93,7 @@ class HDExtra(HDBase):
 		languageList = self._detectionLanguages
 
 		for headerKey in order:
-			if headers.has_key(headerKey):
+			if headerKey in headers:
 				agent = headers[headerKey]
 
 				if agent is not None:

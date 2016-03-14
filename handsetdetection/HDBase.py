@@ -260,13 +260,13 @@ class HDBase(object):
 		syslog.syslog(msg)
 
 	def hasBiKeys(self, headers):
-		if headers.has_key('agent'):
+		if 'agent' in headers:
 			return None
-		if headers.has_key('user-agent'):
+		if 'user-agent' in headers:
 			return None
-		if headers.has_key('profile'):
+		if 'profile' in headers:
 			return None
-		if headers.has_key('x-wap-profile'):
+		if 'x-wap-profile' in headers:
 			return None
 		
 		biKeys = self._detectionConfig['device-bi-order']
@@ -275,7 +275,7 @@ class HDBase(object):
 			for hardwareHeaderList in biKeys[platform]:
 				total = len(hardwareHeaderList)
 				for item in hardwareHeaderList:
-					if headers.has_key(item):
+					if item in headers:
 						count += 1
 					if count == total:
 						return platform
@@ -314,7 +314,7 @@ class HDBase(object):
 								#print self._detectedRuleKey
 								return branch[orderKey][filterKey][matchKey]
 		else:
-			if branch.has_key(value):
+			if value in branch:
 				#print 'branch has key ' + value
 				#print 'node is ' + branch[value]
 				return branch[value]
@@ -323,7 +323,7 @@ class HDBase(object):
 		return None
 
 	def getBranch(self, branchKey):
-		if self._tree.has_key(branchKey):
+		if branchKey in self._tree:
 			return self._tree[branchKey]
 		
 		branch = self._Store.read(branchKey)
