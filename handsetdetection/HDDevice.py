@@ -161,7 +161,7 @@ class HDDevice(HDBase):
 		for k in headers:
 			newHeaders[k.lower()] = headers[k]
 
-		if newHeaders.has_key('x-local-hardwareinfo'):
+		if 'x-local-hardwareinfo' in newHeaders:
 			hardwareInfo = newHeaders['x-local-hardwareinfo']
 			del newHeaders['x-local-hardwareinfo']
 
@@ -209,7 +209,7 @@ class HDDevice(HDBase):
 			for items in confBiKeys[platform]:
 				checking = True
 				for item in items:
-					if headers.has_key(item):
+					if item in headers:
 						value = headers[item] if value == '' else value + '|' + headers[item]
 					else:
 						checking = False
@@ -253,9 +253,9 @@ class HDDevice(HDBase):
 		if headers is None:
 			return self.reply
 
-		if headers.has_key('ip'):
+		if 'ip' in headers:
 			del headers['ip']
-		if headers.has_key('host'):
+		if 'host' in headers:
 			del headers['host']
 
 		# Sanitize headers & cleanup language (you filthy animal) :)
@@ -326,13 +326,13 @@ class HDDevice(HDBase):
 				self._device = self.findById(winningDevice['_id'])
 
 		# Overlay specs
-		if self._platform is not None and self._platform.has_key('Extra'):
+		if self._platform is not None and 'Extra' in self._platform:
 			self.specsOverlay('platform', self._device, self._platform['Extra'])
-		if self._browser is not None and self._browser.has_key('Extra'):
+		if self._browser is not None and 'Extra' in self._browser:
 			self.specsOverlay('browser', self._device, self._browser['Extra'])
-		if self._app is not None and self._app.has_key('Extra'):
+		if self._app is not None and 'Extra' in self._app:
 			self.specsOverlay('app', self._device, self._app['Extra'])
-		if self._language is not None and self._language.has_key('Extra'):
+		if self._language is not None and 'Extra' in self._language:
 			self.specsOverlay('language', self._device, self._language['Extra'])
 
 		# Overlay hardware info result if required
@@ -359,7 +359,7 @@ class HDDevice(HDBase):
 		result = {}
 
 		# Display Resolution - Worth 40 points if correct
-		if props.has_key('display_x') and props.has_key('display_y'):
+		if 'display_x' in props and 'display_y' in props:
 			total += 40
 			if int(specs['display_x']) == int(props['display_x']) and int(specs['display_y']) == int(props['display_y']):
 				result['resolution'] = 40
@@ -376,16 +376,16 @@ class HDDevice(HDBase):
 
 		# Display pixel ratio - Also worth 40 points
 
-		if props.has_key('display_pixel_ratio'):
+		if 'display_pixel_ratio' in props:
 			total += 40;
 			# Note : display_pixel_ratio will be a string stored as 1.33 or 1.5 or 2, perhaps 2.0 ..
 			if specs['display_pixel_ratio'] == str(round(props['display_pixel_ratio']/100, 2)):
 				result['display_pixel_ratio'] = 40;
 
 		# Benchmark - 10 points - Enough to tie break but not enough to overrule display or pixel ratio.
-		if props.has_key('benchmark'):
+		if 'benchmark' in props:
 			total += 10;
-			if specs.has_key('benchmark_min') and specs.has_key('benchmark_max'):
+			if 'benchmark_min' in specs and 'benchmark_max' in specs:
 				if int(props['benchmark']) >= int(specs['benchmark_min']) and int(props['benchmark']) <= int(specs['benchmark_max']):
 					# Inside range
 					result['benchmark'] = 10
@@ -398,7 +398,7 @@ class HDDevice(HDBase):
 
 		# Distance from mean used in tie breaking situations if two devices have the same score.
 		result['distance'] = 100000
-		if specs.has_key('benchmark_min') and specs.has_key('benchmark_max') and props.has_key('benchmark'):
+		if 'benchmark_min' in specs and 'benchmark_max' in specs and 'benchmark' in props:
 			result['distance'] = int(abs(((specs['benchmark_min'] + specs['benchmark_max'])/2) - props['benchmark']))
 
 		result['_id'] = deviceId
@@ -459,11 +459,11 @@ class HDDevice(HDBase):
 		device dictionary
 		info dictionary
 		"""
-		if info.has_key('display_x') and info['display_x'] != 0:
+		if 'display_x' in info and info['display_x'] != 0:
 			device['Device']['hd_specs']['display_x'] = info['display_x']
-		if info.has_key('display_x') and info['display_y'] != 0:
+		if 'display_y' in info and info['display_y'] != 0:
 			device['Device']['hd_specs']['display_y'] = info['display_y']
-		if info.has_key('display_pixel_ratio') and info['display_pixel_ratio'] != 0:
+		if 'display_pixel_ratio' in info and info['display_pixel_ratio'] != 0:
 			device['Device']['hd_specs']['display_pixel_ratio'] = str(round(float(info['display_pixel_ratio'] / 100), 2))
 		# return device ??
 		
@@ -483,7 +483,7 @@ class HDDevice(HDBase):
 		agent = ""
 
 		# Opera mini sometimes puts the vendor # model in the header - nice! ... sometimes it puts ? # ? in as well
-		if headers.has_key('x-operamini-phone') and headers['x-operamini-phone'] != "? # ?":
+		if 'x-operamini-phone' in headers and headers['x-operamini-phone'] != "? # ?":
 			_id = self.getMatch('x-operamini-phone', headers['x-operamini-phone'], self.DETECTIONV4_STANDARD, 'x-operamini-phone', 'device')
 			if _id is not None:
 				return self.findById(_id)
@@ -491,14 +491,14 @@ class HDDevice(HDBase):
 			del headers['x-operamini-phone']
 
 		# Profile header matching
-		if headers.has_key('profile'):
+		if 'profile' in headers:
 			_id = self.getMatch('profile', headers['profile'], self.DETECTIONV4_STANDARD, 'profile', 'device')
 			if _id is not None:
 				return self.findById(_id)
 			del headers['profile']
 
 		# Profile header matching - native header name
-		if headers.has_key('x-wap-profile'):
+		if 'x-wap-profile' in headers:
 			_id = self.getMatch('profile', headers['x-wap-profile'], self.DETECTIONV4_STANDARD, 'x-wap-profile', 'device')
 			if _id is not None:
 				return self.findById(_id)
@@ -512,7 +512,7 @@ class HDDevice(HDBase):
 				order.append(k)
 
 		for item in order:
-			if headers.has_key(item):
+			if item in headers:
 				self.log("Trying user-agent match on header " + item)
 				_id = self.getMatch('user-agent', headers[item], self.DETECTIONV4_STANDARD, item, 'device')
 				if _id is not None:
@@ -522,11 +522,11 @@ class HDDevice(HDBase):
 		self.log('Trying Generic Match')
 
 		_id = None
-		if headers.has_key('x-operamini-phone-ua'):
+		if 'x-operamini-phone-ua' in headers:
 			_id = self.getMatch('agent', headers['x-operamini-phone-ua'], self.DETECTIONV4_GENERIC, 'agent', 'device')
-		if headers.has_key('agent') and _id is None:
+		if 'agent' in headers and _id is None:
 			_id = self.getMatch('user-agent', headers['agent'], self.DETECTIONV4_GENERIC, 'agent', 'device')
-		if headers.has_key('user-agent') and _id is None:
+		if 'user-agent' in headers and _id is None:
 			_id = self.getMatch('user-agent', headers['user-agent'], self.DETECTIONV4_GENERIC, 'agent', 'device')
 
 		if _id is not None:
@@ -540,8 +540,8 @@ class HDDevice(HDBase):
 	def getHighAccuracyCandidates(self):
 		""" Determines if High Accuracy checks are available on the device which was just detected """
 		branch = self.getBranch('hachecks')
-		ruleKey = self._detectedRuleKey['device'] if self._detectedRuleKey.has_key('device') else None;
-		if branch.has_key(ruleKey):
+		ruleKey = self._detectedRuleKey['device'] if 'device' in self._detectedRuleKey else None;
+		if ruleKey in branch:
 			return branch[ruleKey]
 		return None
 
