@@ -69,7 +69,7 @@ class HDStoreTests(unittest.TestCase):
 		self.assertEquals(data, self._data)
 
 		# Verify data is cached
-		data = store._cache.read(key)
+		data = store._Cache.read(key)
 		self.assertEquals(data, self._data)
 
 		# Verify data is on disk
@@ -84,7 +84,7 @@ class HDStoreTests(unittest.TestCase):
 		self.assertEquals(self._data, data)
 
 		# Verify data is not cached
-		data = store._cache.read(key)
+		data = store._Cache.read(key)
 		self.assertEquals(data, None)
 
 		# Verify data is on disk
