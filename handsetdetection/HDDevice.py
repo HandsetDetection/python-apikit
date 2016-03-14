@@ -492,14 +492,14 @@ class HDDevice(HDBase):
 
 		# Profile header matching
 		if headers.has_key('profile'):
-			_id = self.getMatch('profile', headers['profile'], DETECTIONV4_STANDARD, 'profile', 'device')
+			_id = self.getMatch('profile', headers['profile'], self.DETECTIONV4_STANDARD, 'profile', 'device')
 			if _id is not None:
 				return self.findById(_id)
 			del headers['profile']
 
 		# Profile header matching - native header name
 		if headers.has_key('x-wap-profile'):
-			_id = self.getMatch('profile', headers['x-wap-profile'], DETECTIONV4_STANDARD, 'x-wap-profile', 'device')
+			_id = self.getMatch('profile', headers['x-wap-profile'], self.DETECTIONV4_STANDARD, 'x-wap-profile', 'device')
 			if _id is not None:
 				return self.findById(_id)
 			del headers['x-wap-profile']

@@ -3,7 +3,7 @@
 The HandsetDetection class provides easy access to the Handset Detections HTTP
 API version 4.
 """
-# Copyright (c) 2009 -2016 Teleport Corp Pty Ltd.
+# Copyright (c) 2009-2016 Teleport Corp Pty Ltd.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
