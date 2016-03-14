@@ -2,8 +2,6 @@
 
 The HandsetDetection class provides easy access to the Handset Detections HTTP
 API version 4.
-
-HandsetDetectionRequest encapsulates calls to urllib2 to make the request.
 """
 # Copyright (c) 2009 -2016 Teleport Corp Pty Ltd.
 #
@@ -40,8 +38,8 @@ import time
 import md5
 
 import exceptions as exceptions
-from HDStore import *
-from HDDevice import *
+from handsetdetection.HDStore import *
+from handsetdetection.HDDevice import *
 
 class HandsetDetection(object):
     "An object for accessing the Handset Detection API v4.0"
@@ -286,21 +284,3 @@ class HandsetDetection(object):
                 self.reply = json.loads(rawReply)
             return True
         assert False, ("response.code != 200 - urllib2 should have thrown an exception.")
-
-class HandsetDetectionRequest(object):
-    "An HTTP request for Handset Detection"
-
-    def __init__(self, server, uri, data, headers):
-        self._api_server = server
-        self._uri = uri
-        self._data = data
-        self._headers = headers
-        self._request = urllib2.Request(url, data, headers)
-
-    def send(self):
-        "Send the request"
-        try:
-            response = urllib2.urlopen(self._request)
-            return response
-        except urllib2.HTTPError, err:
-            raise exceptions.HttpError(err.filename, err.code, err.msg, err.hdrs)

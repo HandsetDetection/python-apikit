@@ -47,14 +47,14 @@ class HDCache(object):
 			self.setConfig(self.config)
 
 	def setConfig(self, config):
-		if config.has_key('cache'):
+		if 'cache' in config:
 			self.config = config
 
-			if config['cache'].has_key('backend'):
+			if 'backend' in config['cache']:
 				self._backend = config['cache']['backend']
-			if config['cache'].has_key('expiry'):
+			if 'expiry' in config['cache']:
 				self._expiry = config['cache']['expiry']
-			if config['cache'].has_key('arguments'):
+			if 'arguments' in config['cache']:
 				self._arguments = config['cache']['arguments']
 
 			self._region = make_region(key_mangler=sha1_mangle_key).configure(
