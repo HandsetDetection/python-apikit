@@ -1,3 +1,2 @@
 dogpile.cache>=0.5.4
 PyYAML>=3.10
-ConfigParser>=3.3
