@@ -365,7 +365,7 @@ class HDDevice(HDBase):
 				result['resolution'] = 40
 			elif int(specs['display_x']) == int(props['display_y']) and int(specs['display_y']) == int(props['display_x']):
 				result['resolution'] = 40
-			elif specs['display_pixel_ratio'] > 1.0:
+			elif float(specs['display_pixel_ratio']) > 1.0:
 				# The resolution can be scaled by the pixel ratio for some devices
 				adjX = int(int(props['display_x']) * float(specs['display_pixel_ratio']))
 				adjY = int(int(props['display_y']) * float(specs['display_pixel_ratio']))

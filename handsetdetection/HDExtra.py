@@ -25,6 +25,7 @@ from handsetdetection.HDBase import *
 from handsetdetection.HDStore import *
 import os
 import json
+import sys
 
 class HDExtra(HDBase):
 	_data = None
@@ -185,8 +186,15 @@ class HDExtra(HDBase):
 		"""
 			Helper for comparing two strings (numerically if possible)
 		"""
-		a = unicode(a)
-		b = unicode(b)
+
+		if sys.version_info[0] == 2:
+			# Python version 2
+			a = unicode(a)
+			b = unicode(b)
+		else:
+			a = str(a)
+			b = str(b)
+
 		if a.isnumeric() and b.isnumeric():
 			return int(a) - int(b)
 		if a < b:

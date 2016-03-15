@@ -66,11 +66,11 @@ class HDStoreTests(unittest.TestCase):
 		store = HDStore()
 		store.write(key, self._data)
 		data = store.read(key)
-		self.assertEquals(data, self._data)
+		self.assertEqual(data, self._data)
 
 		# Verify data is cached
 		data = store._Cache.read(key)
-		self.assertEquals(data, self._data)
+		self.assertEqual(data, self._data)
 
 		# Verify data is on disk
 		exists =  os.path.isfile(os.path.join(store._directory, key+'.json'))
@@ -81,11 +81,11 @@ class HDStoreTests(unittest.TestCase):
 		store = HDStore()
 		store.store(key, self._data)
 		data = store.fetch(key)
-		self.assertEquals(self._data, data)
+		self.assertEqual(self._data, data)
 
 		# Verify data is not cached
 		data = store._Cache.read(key)
-		self.assertEquals(data, None)
+		self.assertEqual(data, None)
 
 		# Verify data is on disk
 		exists =  os.path.isfile(os.path.join(store._directory, key+'.json'))
@@ -99,13 +99,13 @@ class HDStoreTests(unittest.TestCase):
 		count = 0
 		for key in devices:
 			count += 1
-		self.assertEquals(2, count)
+		self.assertEqual(2, count)
 
 	def test_moveIn(self):
 		store = HDStore({'config':{'filesdir':'/tmp/hd40test'}})
 		store.purge()
 		deviceA = store.read('Device_' + str(self._deviceA['_id']))
-		self.assertEquals(None, deviceA)
+		self.assertEqual(None, deviceA)
 
 		# Save dict as Json - try moving it into the store, then fetching it back out.
 		fileName = 'Device_' + str(self._deviceA['_id']) + '.json'
@@ -114,7 +114,7 @@ class HDStoreTests(unittest.TestCase):
 		jsonFile.close()
 		store.moveIn(fileName, fileName)
 		deviceA = store.fetch('Device_' + str(self._deviceA['_id']))
-		self.assertEquals(self._deviceA, deviceA)
+		self.assertEqual(self._deviceA, deviceA)
 		
 		# Cleanup
 		store.purge()

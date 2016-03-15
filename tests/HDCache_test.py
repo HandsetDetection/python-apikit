@@ -44,11 +44,11 @@ class HDCacheTests(unittest.TestCase):
 		data = {'fish': 'snapper', 'color':'redish'}
 		cache.write(self._token, data)
 		cacheData = cache.read(self._token)
-		self.assertEquals(cacheData, data)
+		self.assertEqual(cacheData, data)
 
 		cache.purge(self._token)
 		cacheData = cache.read(self._token)
-		self.assertEquals(cacheData, None)
+		self.assertEqual(cacheData, None)
 
 	# Note : Test requires memcached
 	# pip install Python-memcached
@@ -68,11 +68,11 @@ class HDCacheTests(unittest.TestCase):
 		data = {'fish': 'snapper', 'color':'redish'}
 		cache.write(self._token, data)
 		cacheData = cache.read(self._token)
-		self.assertEquals(cacheData, data)
+		self.assertEqual(cacheData, data)
 
 		cache.purge(self._token)
 		cacheData = cache.read(self._token)
-		self.assertEquals(cacheData, None)
+		self.assertEqual(cacheData, None)
 		
 if __name__ == '__main__':
     unittest.main()

@@ -57,7 +57,7 @@ class HDCache(object):
 			if 'arguments' in config['cache']:
 				self._arguments = config['cache']['arguments']
 
-			self._region = make_region(key_mangler=sha1_mangle_key).configure(
+			self._region = make_region(key_mangler=str).configure(
 				self._backend,
 				expiration_time = self._expiry,
 				arguments = self._arguments
@@ -79,7 +79,7 @@ class HDCache(object):
 		string - key
 		object - data
 		"""
-		self._region.set(key, data)
+		self._region.set(str(key), data)
 		return True
 
 	def purge(self, key):
