@@ -278,9 +278,9 @@ class HandsetDetection(object):
                                )
             response = urllib.request.urlopen(request)
             if replyType == 'json':
-                rawReply = response.readall().decode("utf-8")
+                rawReply = response.read().decode("utf-8")
             else:
-                rawReply = response.readall()
+                rawReply = response.read()
                 
         except ImportError:
             # Python 2
