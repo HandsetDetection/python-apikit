@@ -25,19 +25,15 @@ API version 4.
 #
 
 import json
-import urllib2
-import urlparse
 import io
 import socket
-import ConfigParser
 import os.path
 import string
 import zipfile
 import yaml
 import time
-import md5
+import hashlib
 
-import exceptions as exceptions
 from handsetdetection.HDStore import *
 from handsetdetection.HDDevice import *
 
@@ -113,7 +109,7 @@ class HandsetDetection(object):
             self._raw_reply = json.dumps(self.reply)
         else:
             uriParts = [ self._urlPathFragment, "device", "vendors", self.config['site_id'] ]
-            uri = string.join(uriParts, "/") + ".json"
+            uri = '/'.join(uriParts) + ".json"
             self._do_request(uri, {}, {}, "json")
         return self.reply
 
@@ -128,7 +124,7 @@ class HandsetDetection(object):
             self._raw_reply = json.dumps(self.reply)
         else:
             uriParts = [ self._urlPathFragment, "device", "models", vendorName, self.config['site_id'] ]
-            uri = string.join(uriParts, "/") + ".json"  
+            uri = '/'.join(uriParts) + ".json" 
             self._do_request(uri, {}, {}, "json")
         return self.reply
 
@@ -139,7 +135,7 @@ class HandsetDetection(object):
             self._raw_reply = json.dumps(self.reply)
         else:
             uriParts = [ self._urlPathFragment, "device", "whathas", key, value, self.config['site_id'] ]
-            uri = string.join(uriParts, "/") + ".json"  
+            uri = '/'.join(uriParts) + ".json" 
             self._do_request(uri, {}, {}, "json")
         return self.reply
         
@@ -150,7 +146,7 @@ class HandsetDetection(object):
             self._raw_reply = json.dumps(self.reply)
         else:
             uriParts = [ self._urlPathFragment, "device", "view", vendor, model, self.config['site_id'] ]
-            uri = string.join(uriParts, "/") + ".json"
+            uri = '/'.join(uriParts) + ".json"
             self._do_request(uri, {}, {}, "json")
         return self.reply
         
@@ -174,7 +170,7 @@ class HandsetDetection(object):
             headers = {}
             headers["Content-type"] = "application/json"
             uriParts = [ self._urlPathFragment, "device", "detect", self.config['site_id'] ]
-            uri = string.join(uriParts, "/") + ".json"
+            uri = '/'.join(uriParts) + ".json"
     
             if isinstance(options, list):
                 options = ",".join(options)
@@ -188,7 +184,7 @@ class HandsetDetection(object):
         """
         
         uriParts = [ self._urlPathFragment, "device", "fetcharchive", self.config['site_id'] ]
-        uri = string.join(uriParts, "/")
+        uri = '/'.join(uriParts) + ".json"
         result = self._do_request(uri, {}, {}, "zip")
         if result == None:
             return None
@@ -206,7 +202,7 @@ class HandsetDetection(object):
         """Fetch the community device archive.
         """
         uriParts = [ self._urlPathFragment, "community", "fetcharchive", self.config['site_id'] ]
-        uri = string.join(uriParts, "/")
+        uri = '/'.join(uriParts) + ".json"
         result = self._do_request(uri, {}, {}, "zip")
         if result == None:
             return None
@@ -244,38 +240,69 @@ class HandsetDetection(object):
         # Speeds up network turnaround requests by 50%
         realm = self._api_realm
         username = self.config['api_username']
-        secret = self.config['api_secret']
+        secret = str(self.config['api_secret'])
         nc = "00000001"
         snonce = self._api_realm
-        cnonce = md5.new(str(int(time.time())) + secret).hexdigest()
+        cnonceBase = (str(int(time.time())) + secret).encode('utf8')
+        cnonce = hashlib.md5(cnonceBase).hexdigest()
         qop = 'auth'
         # AuthDigest Components
         # http://en.wikipedia.org/wiki/Digest_access_authentication
-        ha1 = md5.new(username + ':' + realm + ':' + secret).hexdigest()
-        ha2 = md5.new('POST:' + uri).hexdigest()
-        response = md5.new(ha1 + ':' + snonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).hexdigest()
+        ha1 = hashlib.md5((username + ':' + realm + ':' + secret).encode('utf8')).hexdigest()
+        ha2 = hashlib.md5(str('POST:' + uri).encode('utf8')).hexdigest()
+        response = hashlib.md5(str(ha1 + ':' + snonce + ':' + nc + ':' + cnonce + ':' + qop + ':' + ha2).encode('utf8')).hexdigest()
 
-        socket.setdefaulttimeout(self.config['timeout'])
+        #
         # Conventional HTTP Digest handling
         #auth = urllib2.HTTPDigestAuthHandler()
         #auth.add_password(self._api_realm, url, self.config['api_username'], self.config['api_secret'])
         #opener = urllib2.build_opener(auth, urllib2.HTTPHandler(debuglevel=1))
         #urllib2.install_opener(opener)
-        request = urllib2.Request(url, postdata, headers)
-        request.add_header('Authorization',
-                            'Digest ' +
-                            'username="' + username + '", ' +
-                            'realm="' + realm + '", ' +
-                            'nonce="' + snonce + '", ' +
-                            'uri="' + uri + '", ' +
-                            'qop=' + qop + ', ' +
-                            'nc=' + nc + ', ' +
-                            'cnonce="' + cnonce + '", ' +
-                            'response="' + response + '", ' +
-                            'opaque="' + realm + '"'
-                           )
-        response = urllib2.urlopen(request)
-        rawReply = response.read()
+
+        # Python 2/3 url handling
+        try:
+            # Python 3
+            import urllib.request
+            request = urllib.request.Request(url, postdata.encode('utf-8'), headers)
+            request.add_header('Authorization',
+                                'Digest ' +
+                                'username="' + username + '", ' +
+                                'realm="' + realm + '", ' +
+                                'nonce="' + snonce + '", ' +
+                                'uri="' + uri + '", ' +
+                                'qop=' + qop + ', ' +
+                                'nc=' + nc + ', ' +
+                                'cnonce="' + cnonce + '", ' +
+                                'response="' + response + '", ' +
+                                'opaque="' + realm + '"'
+                               )
+            response = urllib.request.urlopen(request)
+            if replyType == 'json':
+                rawReply = response.readall().decode("utf-8")
+            else:
+                rawReply = response.readall()
+                
+        except ImportError:
+            # Python 2
+            socket.setdefaulttimeout(self.config['timeout'])
+            import urllib2
+            request = urllib2.Request(url, postdata, headers)
+            request.add_header('Authorization',
+                                'Digest ' +
+                                'username="' + username + '", ' +
+                                'realm="' + realm + '", ' +
+                                'nonce="' + snonce + '", ' +
+                                'uri="' + uri + '", ' +
+                                'qop=' + qop + ', ' +
+                                'nc=' + nc + ', ' +
+                                'cnonce="' + cnonce + '", ' +
+                                'response="' + response + '", ' +
+                                'opaque="' + realm + '"'
+                               )
+            response = urllib2.urlopen(request)
+            rawReply = response.read()
+        
+        response.close()
         
         if response.code == 200:
             #print rawReply

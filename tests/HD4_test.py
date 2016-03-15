@@ -119,7 +119,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 		
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('Nokia', reply['vendor'])
 		self.assertIn('Samsung', reply['vendor'])
 
@@ -129,7 +129,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('N95', reply['model'])
 		self.assertIn('N96', reply['model'])
 		
@@ -139,7 +139,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('N95', reply['device']['general_model'])
 		self.assertIn('Nokia', reply['device']['general_vendor'])
 
@@ -149,7 +149,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('Asus', hd.getRawReply())
 		self.assertIn('V80', hd.getRawReply())
 		self.assertIn('Spice', hd.getRawReply())
@@ -166,9 +166,9 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Computer')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Computer')
 		
 
 	def test_cloudDetectHTTPDesktopJunk(self):
@@ -182,8 +182,8 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 301)
-		self.assertEquals(reply['message'], 'Not Found')
+		self.assertEqual(reply['status'], 301)
+		self.assertEqual(reply['message'], 'Not Found')
 
 
 	def test_cloudDetectHTTPWii(self):
@@ -197,9 +197,9 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Console')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Console')
 
 
 	def test_cloudDetectHTTPiPhone(self):
@@ -213,14 +213,14 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.3')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
 		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
 		self.assertTrue('display_ppi' in reply['hd_specs'])
 		self.assertTrue('benchmark_min' in reply['hd_specs'])
@@ -238,14 +238,14 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.3')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
 		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
 		self.assertTrue('display_ppi' in reply['hd_specs'])
 		self.assertTrue('benchmark_min' in reply['hd_specs'])
@@ -263,16 +263,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3GS')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.2.1')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3GS')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.2.1')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 162)
 
 	def test_cloudDetectHTTPiPhone3g(self):
 		""" Detection test iPhone 3GS (same UA as iPhone 3GS, different x-local-hardwareinfo header) """
@@ -286,16 +286,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3G')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.2.1')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3G')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.2.1')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 162)
 
 
 	def test_cloudDetectHTTPiPhoneCrazyBenchmark(self):
@@ -310,16 +310,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3G')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '2.0')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'],162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3G')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '2.0')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'],162)
 
 	def test_cloudDetectHTTPiPhone5sFacebook(self):
 		""" Detection test iPhone 5s running Facebook 9.0 app (hence no general_browser set). """
@@ -333,20 +333,20 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 5S')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '7.1.1')
-		self.assertEquals(reply['hd_specs']['general_browser'], '')
-		self.assertEquals(reply['hd_specs']['general_browser_version'], '')
-		self.assertEquals(reply['hd_specs']['general_app'], 'Facebook')
-		self.assertEquals(reply['hd_specs']['general_app_version'], '9.0')
-		self.assertEquals(reply['hd_specs']['general_language'], 'da')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'2.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 326)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 5S')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '7.1.1')
+		self.assertEqual(reply['hd_specs']['general_browser'], '')
+		self.assertEqual(reply['hd_specs']['general_browser_version'], '')
+		self.assertEqual(reply['hd_specs']['general_app'], 'Facebook')
+		self.assertEqual(reply['hd_specs']['general_app_version'], '9.0')
+		self.assertEqual(reply['hd_specs']['general_language'], 'da')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'2.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 326)
 
 
 	def test_cloudDetectBIAndroid(self):
@@ -389,13 +389,13 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Samsung')
-		self.assertEquals(reply['hd_specs']['general_model'], 'GT-I9500')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'Android')
-#		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.4.2')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Samsung')
+		self.assertEqual(reply['hd_specs']['general_model'], 'GT-I9500')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'Android')
+#		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.4.2')
 
 
 	def test_cloudDetectBiiPhone4s(self):
@@ -409,13 +409,13 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 4S')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-#		self.assertEquals(reply['hd_specs']['general_platform_version'], '5.0')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 4S')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+#		self.assertEqual(reply['hd_specs']['general_platform_version'], '5.0')
 
 	def test_cloudDetectBiWindowsPhone(self):
 		buildInfo = {
@@ -428,12 +428,12 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Nokia')
-		self.assertEquals(reply['hd_specs']['general_model'], 'Lumia 1020')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'Windows Phone')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Nokia')
+		self.assertEqual(reply['hd_specs']['general_model'], 'Lumia 1020')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'Windows Phone')
 
 	# Ultimate Detection Tests
 	def test_deviceFetchArchive(self):
@@ -447,9 +447,9 @@ class HD4Tests(unittest.TestCase):
 		hd = HandsetDetection(self.ultimateConfig)
 		result = hd.deviceVendors()
 		reply = hd.getReply()
-		
+
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('Nokia', reply['vendor'])
 		self.assertIn('Samsung', reply['vendor'])
 
@@ -459,7 +459,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('N95', reply['model'])
 		self.assertIn('N96', reply['model'])
 
@@ -469,7 +469,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('N95', reply['device']['general_model'])
 		self.assertIn('Nokia', reply['device']['general_vendor'])
 
@@ -479,7 +479,7 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
+		self.assertEqual(reply['status'], 0)
 		self.assertIn('Asus', hd.getRawReply())
 		self.assertIn('V80', hd.getRawReply())
 		self.assertIn('Spice', hd.getRawReply())
@@ -496,9 +496,9 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Computer')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Computer')
 
 
 	def test_ultimateDetectHTTPDesktopJunk(self):
@@ -512,8 +512,8 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 301)
-		self.assertEquals(reply['message'], 'Not Found')
+		self.assertEqual(reply['status'], 301)
+		self.assertEqual(reply['message'], 'Not Found')
 
 
 	def test_ultimateDetectHTTPWii(self):
@@ -527,9 +527,9 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Console')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Console')
 
 
 	def test_ultimateDetectHTTPiPhone(self):
@@ -543,14 +543,14 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.3')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
 		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
 		self.assertTrue('display_ppi' in reply['hd_specs'])
 		self.assertTrue('benchmark_min' in reply['hd_specs'])
@@ -568,14 +568,14 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.3')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.3')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
 		self.assertTrue('display_pixel_ratio' in reply['hd_specs'])
 		self.assertTrue('display_ppi' in reply['hd_specs'])
 		self.assertTrue('benchmark_min' in reply['hd_specs'])
@@ -594,16 +594,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3GS')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.2.1')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3GS')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.2.1')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 162)
 
 	def test_ultimateDetectHTTPiPhone3g(self):
 		""" Detection test iPhone 3GS (same UA as iPhone 3GS, different x-local-hardwareinfo header) """
@@ -617,16 +617,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3G')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.2.1')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3G')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.2.1')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 162)
 
 
 	def test_ultimateDetectHTTPiPhoneCrazyBenchmark(self):
@@ -641,16 +641,16 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 3G')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '2.0')
-		self.assertEquals(reply['hd_specs']['general_language'], 'en-gb')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'1.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'],162)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 3G')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '2.0')
+		self.assertEqual(reply['hd_specs']['general_language'], 'en-gb')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'1.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'],162)
 
 	def test_ultimateDetectHTTPiPhone5sFacebook(self):
 		""" Detection test iPhone 5s running Facebook 9.0 app (hence no general_browser set). """
@@ -664,20 +664,20 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 5S')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-		self.assertEquals(reply['hd_specs']['general_platform_version'], '7.1.1')
-		self.assertEquals(reply['hd_specs']['general_browser'], '')
-		self.assertEquals(reply['hd_specs']['general_browser_version'], '')
-		self.assertEquals(reply['hd_specs']['general_app'], 'Facebook')
-		self.assertEquals(reply['hd_specs']['general_app_version'], '9.0')
-		self.assertEquals(reply['hd_specs']['general_language'], 'da')
-		self.assertEquals(reply['hd_specs']['display_pixel_ratio'],'2.0')
-		self.assertEquals(reply['hd_specs']['display_ppi'], 326)
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 5S')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+		self.assertEqual(reply['hd_specs']['general_platform_version'], '7.1.1')
+		self.assertEqual(reply['hd_specs']['general_browser'], '')
+		self.assertEqual(reply['hd_specs']['general_browser_version'], '')
+		self.assertEqual(reply['hd_specs']['general_app'], 'Facebook')
+		self.assertEqual(reply['hd_specs']['general_app_version'], '9.0')
+		self.assertEqual(reply['hd_specs']['general_language'], 'da')
+		self.assertEqual(reply['hd_specs']['display_pixel_ratio'],'2.0')
+		self.assertEqual(reply['hd_specs']['display_ppi'], 326)
 
 
 	def test_ultimateDetectBIAndroid(self):
@@ -720,13 +720,13 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Samsung')
-		self.assertEquals(reply['hd_specs']['general_model'], 'GT-I9500')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'Android')
-#		self.assertEquals(reply['hd_specs']['general_platform_version'], '4.4.2')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Samsung')
+		self.assertEqual(reply['hd_specs']['general_model'], 'GT-I9500')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'Android')
+#		self.assertEqual(reply['hd_specs']['general_platform_version'], '4.4.2')
 
 
 	def test_ultimateDetectBiiPhone4s(self):
@@ -740,13 +740,13 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Apple')
-		self.assertEquals(reply['hd_specs']['general_model'], 'iPhone 4S')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'iOS')
-#		self.assertEquals(reply['hd_specs']['general_platform_version'], '5.0')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Apple')
+		self.assertEqual(reply['hd_specs']['general_model'], 'iPhone 4S')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'iOS')
+#		self.assertEqual(reply['hd_specs']['general_platform_version'], '5.0')
 
 	def test_ultimateDetectBiWindowsPhone(self):
 		buildInfo = {
@@ -759,16 +759,13 @@ class HD4Tests(unittest.TestCase):
 		reply = hd.getReply()
 
 		self.assertTrue(reply)
-		self.assertEquals(reply['status'], 0)
-		self.assertEquals(reply['message'], 'OK')
-		self.assertEquals(reply['hd_specs']['general_type'], 'Mobile')
-		self.assertEquals(reply['hd_specs']['general_vendor'], 'Nokia')
-		self.assertEquals(reply['hd_specs']['general_model'], 'Lumia 1020')
-		self.assertEquals(reply['hd_specs']['general_platform'], 'Windows Phone')
+		self.assertEqual(reply['status'], 0)
+		self.assertEqual(reply['message'], 'OK')
+		self.assertEqual(reply['hd_specs']['general_type'], 'Mobile')
+		self.assertEqual(reply['hd_specs']['general_vendor'], 'Nokia')
+		self.assertEqual(reply['hd_specs']['general_model'], 'Lumia 1020')
+		self.assertEqual(reply['hd_specs']['general_platform'], 'Windows Phone')
 
-
-	#Todo : ultimate tests - same as cloud tests but using ultimate config
-	
 
 	# Ultimate Community Tests
 	def test_communityFetchArchive(self):
