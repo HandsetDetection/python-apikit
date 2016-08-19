@@ -22,7 +22,7 @@
 #
 
 import os
-import syslog
+import logging
 import re
 
 class HDBase(object):
@@ -257,7 +257,7 @@ class HDBase(object):
 		return headerString
 
 	def log(self, msg):
-		syslog.syslog(msg)
+		logging.warning(msg)
 
 	def hasBiKeys(self, headers):
 		if 'agent' in headers:
